@@ -3,9 +3,17 @@ const pixivdl = require('@franknoh/pixivdl');
 const chalk = require('chalk');
 const figlet = require('figlet');
 const { Command } = require('commander');
+const { existsSync, writeFileSync, readFileSync } = require('fs');
 
 const client = new pixivdl.PixivClient();
 const program = new Command();
+
+if(!existsSync('./config.json')) {
+    writeFileSync('./config.json', JSON.stringify({
+        username: '',
+        password: ''
+    }));
+}
 
 program
     .name('pixivdl')
@@ -22,11 +30,24 @@ program.command('login')
         } else {
             client.login(data.username, data.password).then(()=>{
                 console.log(chalk.green('login success'));
+                writeFileSync('./config.json', JSON.stringify({
+                    username: data.username,
+                    password: data.password
+                }));
             }).catch(err => {
                 console.log(chalk.red('login failed'));
                 console.log(chalk.red(err.message));
             });
         }
+    });
+
+program.command('logout')
+    .description('logout from pixiv')
+    .action(() => {
+        writeFileSync('./config.json', JSON.stringify({
+            username: '',
+            password: ''
+        }));
     });
 
 program.command('download')
@@ -44,6 +65,10 @@ program.command('download')
         }else if(!data.output) {
             console.log(chalk.red('output directory is required'));
         }else{
+            const config = JSON.parse(readFileSync('./config.json').toString());
+            if(config.username !== '') {
+                client.login(config.username, config.password).then();
+            }
             data.tags = data.tags.split(' ');
             data.extags = data.extags.split(' ');
             data.number = parseInt(data.number?data.number:'0');

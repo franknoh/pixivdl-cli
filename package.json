@@ -1,13 +1,13 @@
 {
   "name": "pixivdl-cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "pixiv downloader cli",
   "main": "index.js",
   "bin": {
     "pixivdl": "index.js"
   },
   "dependencies": {
-    "@franknoh/pixivdl": "^2.0.0",
+    "@franknoh/pixivdl": "^2.1.0",
     "chalk": "^4.1.2",
     "commander": "^9.4.0",
     "figlet": "^1.5.2"
